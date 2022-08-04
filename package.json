@@ -1,0 +1,19 @@
+{
+  "name": "MyLog electron",
+  "version": "0.0.1",
+  "description": "つぶやきを保存する",
+  "main": "src/js/main.js",
+  "scripts": {
+    "start": "electron ."
+  },
+  "repository": "https://github.com/ytyaru/Electron.MyLog.SQLite3.20220804093818",
+  "keywords": [
+    "Electron",
+    "SQLite3"
+  ],
+  "author": "ytyaru",
+  "license": "CC0-1.0",
+  "devDependencies": {
+    "electron": "^19.0.9"
+  }
+}
