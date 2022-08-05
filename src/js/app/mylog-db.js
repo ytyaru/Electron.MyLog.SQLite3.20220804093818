@@ -1,11 +1,25 @@
+console.debug(`----- mylog-db.js -----`)
 class MyLogDb {
     constructor() {
+        console.debug(`----- MyLogDb() -----`)
         this.PATH_DB = `./src/db/mylog.db`
         this.PATH_WASM = `./src/lib/sql.js/1.7.0`
+        //this.PATH_DB = `/tmp/work/Electron.MyLog.SQLite3.20220804093818/src/db/mylog.db`
+        //this.PATH_WASM = `/tmp/work/Electron.MyLog.SQLite3.20220804093818/src/lib/sql.js/1.7.0`
         this.SQL = null
         this.DB = null
+        //this.load()
     }
     async load() {
+        console.debug(`----- load() -----`)
+        if (!this.DB) {
+            console.debug(window.myApi.readFile(this.PATH_DB))
+            //this.DB = window.myApi.loadDb(window.myApi.readFile(this.PATH_DB))
+            this.DB = await window.myApi.loadDb(this.PATH_DB).catch(e=>console.error(e))
+            console.log(this.DB)
+        }
+        return this.DB
+        /*
         if (!this.DB) {
             //this.SQL = await initSqlJs({locateFile: file => `${this.PATH_WASM}/${file}`})
             this.SQL = await initSqlJs({locateFile: file =>{console.log(`${this.PATH_WASM}/${file}`); return `${this.PATH_WASM}/${file}`}})
@@ -14,6 +28,7 @@ class MyLogDb {
             this.DB = new this.SQL.Database(new Uint8Array(buf))
         }
         return this.DB
+        */
     }
     async save() {
         window.myApi.writeFile(this.PATH_DB, this.DB.export());
@@ -43,6 +58,8 @@ class MyLogDb {
     }
     #insertHtml(id, content, created) { return `<p>${this.#toContent(content)}<br>${this.#toTime(created)}${this.#toDeleteCheckbox(id)}</p>` }
     async toHtml() {
+        console.debug(this.DB)
+        if (!this.DB) { this.load() }
         const address = (window.mpurse) ? await window.mpurse.getAddress() : null
         const res = this.DB.exec(`select id,content,created from comments order by created desc;`)
         return res[0].values.map(r=>TextToHtml.toHtml(r[0], r[1], r[2], address)).join('')

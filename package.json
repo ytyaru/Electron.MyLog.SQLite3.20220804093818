@@ -15,5 +15,9 @@
   "license": "CC0-1.0",
   "devDependencies": {
     "electron": "^19.0.9"
+  },
+  "dependencies": {
+    "sql-wasm": "^1.1.4",
+    "sql.js": "^1.7.0"
   }
 }

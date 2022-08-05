@@ -1,7 +1,15 @@
 window.addEventListener('DOMContentLoaded', async(event) => {
     console.log('DOMContentLoaded!!');
-    console.debug(window.myApi)
+    console.log(window.myApi)
     window.myApi.setup();
+    console.log('!!');
+    console.log(window.myApi.readFile(`./src/db/mylog.db`))
+    console.log(await window.myApi.loadDb(`./src/db/mylog.db`))
+    const sqlDb = await window.myApi.loadDb(`./src/db/mylog.db`)
+    console.log(sqlDb);
+    console.log(sqlDb.db);
+    console.log(sqlDb.exec(`select * from comments;`));
+    //console.log(db.DB);
     const db = new MyLogDb()
     await db.load()
     /*
@@ -55,7 +63,7 @@ window.addEventListener('DOMContentLoaded', async(event) => {
     })
     Loading.setup()
     //uploader.setup()
-    document.getElementById('post-list').innerHTML = await db.toHtml()
+//    document.getElementById('post-list').innerHTML = await db.toHtml()
     document.getElementById('content').focus()
     document.getElementById('content-length').textContent = LENGTH;
 });

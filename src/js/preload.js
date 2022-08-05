@@ -1,5 +1,15 @@
 const {remote,contextBridge,ipcRenderer} =  require('electron');
-
+const fs = require('fs')
+const path = require('path')
+const util = require('util')
+const initSqlJs = require('sql.js');
+//const initSqlJs = require('sql-wasm.js');
+//const initSqlJs = require('sql.js');
+//const initSqlJs = require('sql-wasm.js');
+//const initSqlJs = require('sql-wasm')
+//const {initSqlJs} = require('sql-wasm')
+//const initSqlJs = require('sql-wasm.js');
+//import createSqlWasm from "sql-wasm";
 window.addEventListener('DOMContentLoaded', () => {
     const replaceText = (selector, text) => {
         const element = document.getElementById(selector)
@@ -28,11 +38,43 @@ contextBridge.exposeInMainWorld('myApi', {
             document.getElementById('result').value = result.stdout;
         })
         */
+        console.log('setup()')
     },
+    //loadSql:
+    //loadDb:(filebuffer)=>initSqlJs().then((SQL)=>new SQL.Database(filebuffer)).catch(e=>console.error(er)),
+    /*
+    loadDb:async(fileAsUnit8array)=>{
+        const SQL = await initSqlJs()
+        return new this.SQL.Database(fileAsUnit8array)
+        //this.DB = new this.SQL.Database(new Uint8Array(buf))
+    },
+    */
+    loadDb:async(path)=>{
+        console.log(path)
+        console.log(initSqlJs)
+        const SQL = await initSqlJs().catch(e=>console.error(e))
+        console.log(SQL)
+        const db = fs.readFileSync(path)
+        console.log(db)
+        console.log(new Uint8Array(db))
+        console.log(new SQL.Database(new Uint8Array(db)))
+        return new SQL.Database(new Uint8Array(db)) // Uncaught (in promise) TypeError: sqlDb.exec is not a function
+        //return new this.SQL.Database(db) // Uncaught (in promise) Error: Cannot read properties of undefined (reading 'Database')
+        //this.DB = new this.SQL.Database(new Uint8Array(buf))
+    },
+    /*
+    loadDb:(filebuffer)=>{
+        initSqlJs().then((SQL)=>{
+            const db = new SQL.Database(filebuffer).catch(e=>console.error(e))
+            console.debug(db)
+            return db
+        })
+    },
+    */
     open:async()=>await ipcRenderer.invoke('open'),
     save:async()=>await ipcRenderer.invoke('save'),
     readFile:(path, kwargs=null)=>{
-        if (!kwargs) { kwargs = { encoding: 'utf8' } }
+        //if (!kwargs) { kwargs = { encoding: 'utf8' } }
         return fs.readFileSync(path, kwargs)
     },
     writeFile:(path, data)=>fs.writeFileSync(path, data),
